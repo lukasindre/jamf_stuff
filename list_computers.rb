@@ -28,8 +28,21 @@ class JamfApi
   end
 
   def get_computer_by_id(id)
-    response = self.class.get("/computers/id/#{id}", @options)
-    response
+    JamfComputer.new(self.class.get("/computers/id/#{id}", @options))
+  end
+end
+
+class JamfComputer
+  def initialize(json)
+    @json = json
+  end
+
+  def name
+    @json["computer"]["general"]["name"]
+  end
+  
+  def site
+    @json["computer"]["general"]["site"]["name"]
   end
 end
 
@@ -37,8 +50,8 @@ COMPUTER_IDS = []
 
 response = JamfApi.new.list_computers
 response["computers"]["computer"].each { |computer| COMPUTER_IDS.append(computer["id"]) }
-puts COMPUTER_IDS[0]
-PP.pp(JamfApi.new.get_computer_by_id(COMPUTER_IDS[0]))
-# COMPUTER_IDS.each do |id|
-#   PP.pp(JamfApi.new.get_computer_by_id(id))
-# end
+
+COMPUTER_IDS.each do |id|
+  computer = JamfApi.new.get_computer_by_id(id)
+  puts "#{computer.name},#{computer.site}"
+end
