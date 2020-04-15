@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 require 'bundler/inline'
 require 'pp'
+require 'nokogiri'
 
 gemfile do 
   source 'https://rubygems.org'
@@ -19,20 +20,26 @@ class JamfApi
     @options[:headers] = {
       accept: "application/xml",
       authorization: "Basic #{ENV["JAMF_BASE64"]}",
+      "content-type" => "application/xml"
     }
   end
 
   def update_purchasing(serial, date, price)
-    @options[:body] = {
-      purchasing: {
-        purchase_price: price,
-        po_date: date
+    builder = Nokogiri::XML::Builder.new do |xml|
+      xml.computer {
+        xml.general {
+          xml.purchasing {
+            xml.purchase_price date
+            xml.po_date price
+          }
         }
-    }
-    puts @options
+      }
+    end
+    puts builder.to_xml
+    @options[:body] = "#{builder.to_xml}"
     response = self.class.put("/computers/serialnumber/#{serial}", @options)
     response
   end
 end
 
-PP.pp(JamfApi.new.update_purchasing("C02X475UJG5H", "2018-09-04", "1952.25"))
+puts JamfApi.new.update_purchasing("C02X475UJG5H", "2018-09-04", "1952.25")
