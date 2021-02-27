@@ -1,14 +1,10 @@
 import pickle
 import os
 from jamf_api import JamfApi
-from pprint import pprint as pp
 from collections import Counter
 
 
 client = JamfApi()
-
-# for app in response.json()['computer']['software']['applications']:
-#     print(app['name'])
 
 computer_apps = None
 if os.path.exists("apps.pickle"):
