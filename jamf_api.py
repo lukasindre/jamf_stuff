@@ -12,11 +12,20 @@ class JamfApi:
                 }
         self.client.auth = (os.environ["JAMF_USERNAME"], os.environ["JAMF_PASSWORD"])
 
-    def jamf_get(self, path, json=None, params=None):
+    def jamf_get(self, direct: bool, path, json=None, params=None):
+        endpoint = ""
+        if direct:
+            endpoint = self.url(path)
+        else:
+            endpoint = path
+
         response = self.client.get(
-            url=f"{self.BASEURL}{path}",
+            url=endpoint,
             json=json,
             params=params
         )
 
         return response
+
+    def url(self, uri):
+        return f"{self.BASEURL}{uri}"
