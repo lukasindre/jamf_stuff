@@ -1,1 +1,1 @@
-# A slew of Jamf API scripts for some reporting needs
+# A bunch of jamf stuff
