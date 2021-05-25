@@ -4,7 +4,7 @@ import os
 
 class JamfApi:
     def __init__(self):
-        self.BASEURL = "https://upstart.jamfcloud.com/JSSResource"
+        self.BASEURL = ""
         self.client = requests.Session()
         self.client.headers = {
                 'accept':'application/json',
